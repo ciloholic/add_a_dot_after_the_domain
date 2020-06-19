@@ -1,0 +1,18 @@
+version: '3.7'
+services:
+  httpd:
+    container_name: httpd-container
+    build: ./httpd
+    ports:
+      - 3001:80
+    volumes:
+      - ./html:/usr/local/apache2/htdocs
+    tty: true
+  nginx:
+    container_name: nginx-container
+    build: ./nginx
+    ports:
+      - 3002:80
+    volumes:
+      - ./html:/var/www/html
+    tty: true
