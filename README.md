@@ -128,7 +128,43 @@ youtube-ui.l.google.com. 300    IN      A       216.58.220.110
 
 # 余談
 
-Docker で Nginx を用意して、末尾に「.」付けてアクセスしてみた。
+## Docker で Apache を用意して、末尾に「.」付けてアクセスする
+
+```
+$ http -p hH http://localhost.lvh.me.:3001/
+GET / HTTP/1.1
+Accept: */*
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Host: localhost.lvh.me.:3001 ★末尾に「.」が付いてる
+User-Agent: HTTPie/1.0.2
+
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Connection: Keep-Alive
+Content-Length: 123
+Content-Type: text/html
+Date: Sun, 21 Jun 2020 05:20:01 GMT
+ETag: "7b-5a8084175d7c0"
+Keep-Alive: timeout=5, max=100
+Last-Modified: Sun, 14 Jun 2020 09:51:35 GMT
+Server: Apache/2.4.43 (Unix)
+```
+
+Apache のアクセスログに `%v` を出力してみたが、末尾の「.」が無い。
+
+```
+172.19.0.1
+-
+-
+[21/Jun/2020:05:20:01 +0000]
+"localhost.lvh.me" ★末尾の「.」が無い
+"GET / HTTP/1.1"
+200
+123
+```
+
+## Docker で Nginx を用意して、末尾に「.」付けてアクセスする
 
 ```
 $ http -p hH http://localhost.lvh.me.:3002/
@@ -136,7 +172,7 @@ GET / HTTP/1.1
 Accept: */*
 Accept-Encoding: gzip, deflate
 Connection: keep-alive
-Host: localhost.lvh.me.:3002 ★ホストは末尾に「.」が付いてる
+Host: localhost.lvh.me.:3002 ★末尾に「.」が付いてる
 User-Agent: HTTPie/1.0.2
 
 HTTP/1.1 200 OK
@@ -153,12 +189,11 @@ Server: nginx/1.19.0
 Nginx のアクセスログに `$host` を出力してみたが、末尾の「.」が消えてた。
 
 ```
-nginx-container
 172.19.0.1
 -
 -
 [19/Jun/2020:09:42:33 +0000]
-"localhost.lvh.me" ★ホストの末尾の「.」が消えた
+"localhost.lvh.me" ★末尾の「.」が無い
 "GET / HTTP/1.1"
 200
 123
